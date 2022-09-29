@@ -49,6 +49,21 @@ class UserResource(Resource):
         user_json = user.to_json()
         return make_response(200, 'user', user_json)
 
+    def put(self, user_id):
+        user = User.query.filter_by(id=user_id).first()
+        req = request.get_json()
+
+        try:
+            for attr, value in req.items():
+                setattr(user, attr, value)
+
+            db.session.add(user)
+            db.session.commit()
+            return make_response(200, 'user', user.to_json(), 'User successfully updated!')
+        except Exception as e:
+            print(e)
+            return make_response(400, 'user', {}, 'User update error!')
+
 
 def make_response(status, content_name, content, message=None):
     body = {}
