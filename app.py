@@ -53,7 +53,15 @@ def make_response(status, content_name, content, message=None):
     return Response(json.dumps(body), status=status, mimetype='application/json')
 
 
+class UserResource(Resource):
+    def get(self, user_id):
+        user = User.query.get_or_404(user_id)
+        user_json = user.to_json()
+        return make_response(200, 'user', user_json)
+
+
 api.add_resource(UsersResource, '/users')
+api.add_resource(UserResource, '/user/<int:user_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
