@@ -30,6 +30,18 @@ class UsersResource(Resource):
         users_list = [user.to_json() for user in users]
         return make_response(200, 'users', users_list)
 
+    def post(self):
+        req = request.get_json()
+
+        try:
+            new_user = User(name=req['name'], email=req['email'])
+            db.session.add(new_user)
+            db.session.commit()
+            return make_response(201, 'user', new_user.to_json(), 'User created successfully!')
+        except Exception as e:
+            print(e)
+            return make_response(400, 'user', {}, 'Error creating user!')
+
 
 def make_response(status, content_name, content, message=None):
     body = {}
