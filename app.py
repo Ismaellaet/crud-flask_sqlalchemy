@@ -64,6 +64,17 @@ class UserResource(Resource):
             print(e)
             return make_response(400, 'user', {}, 'User update error!')
 
+    def delete(self, user_id):
+        user = User.query.filter_by(id=user_id).first()
+
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            return make_response(200, 'user', user.to_json(), 'User deleted successfully!')
+        except Exception as e:
+            print(e)
+            return make_response(400, 'user', {}, 'Error deleting user!')
+
 
 def make_response(status, content_name, content, message=None):
     body = {}
