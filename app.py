@@ -43,6 +43,13 @@ class UsersResource(Resource):
             return make_response(400, 'user', {}, 'Error creating user!')
 
 
+class UserResource(Resource):
+    def get(self, user_id):
+        user = User.query.get_or_404(user_id)
+        user_json = user.to_json()
+        return make_response(200, 'user', user_json)
+
+
 def make_response(status, content_name, content, message=None):
     body = {}
     body[content_name] = content
@@ -51,13 +58,6 @@ def make_response(status, content_name, content, message=None):
         body['message'] = message
 
     return Response(json.dumps(body), status=status, mimetype='application/json')
-
-
-class UserResource(Resource):
-    def get(self, user_id):
-        user = User.query.get_or_404(user_id)
-        user_json = user.to_json()
-        return make_response(200, 'user', user_json)
 
 
 api.add_resource(UsersResource, '/users')
